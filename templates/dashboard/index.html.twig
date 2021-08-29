@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello DashboardController!{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+{% if app.user %}
+        <div class="mb-3">
+            Ingresaste como {{ app.user.username }}, <a href="{{ path('app_logout') }}">Salir</a>
+        </div>
+{% endif %}
+<div class="example-wrapper">
+    <h1>Hello {{ name }}! ✅</h1>
+
+    {% for flash_message in app.session.flashbag.get('exito') %}
+    <div class="flash-notice">
+        {{ flash_message }}
+    </div>
+    {% endfor %}    
+    {% for flash_message in app.session.flashbag.get('error') %}
+    <div class="flash-notice">
+        {{ flash_message }}
+    </div>
+    {% endfor %}    
+
+    <h4>Posts</h4>
+
+    {# Pintando los posts #}
+    {# total items count #}
+    <div class="count">
+        {{ posts.getTotalItemCount }}
+    </div>
+    <table>
+        <tr>
+            {# sorting of properties based on query components #}
+            <th>{{ knp_pagination_sortable(posts, 'Id', 'a.id') }}</th>
+            <th{% if posts.isSorted('a.Title') %} class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(posts, 'Title', 'a.title') }}
+            </th>
+            <th{% if posts.isSorted(['a.date', 'a.time']) %} class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(posts, 'Release', ['a.date', 'a.time']) }}
+            </th>
+        </tr>
+
+        {# table body #}
+        {% for article in posts %}
+            <tr {% if loop.index is odd %}class="color"{% endif %}>
+                <td>{{ article.id }}</td>
+                <td>{{ article.titulo }}</td>
+                <td>{{ article.foto }}</td>
+                <td>{{ article.fecha_publicacion | date('Y-m-d') }}, {{ article.fecha_publicacion | date('H:i:s') }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    {# display navigation #}
+    <div class="navigation">
+        {{ knp_pagination_render(posts) }}
+    </div>
+
+</div>
+{% endblock %}
