@@ -20,6 +20,9 @@ class DashboardController extends AbstractController
      */
     public function index(PaginatorInterface $paginator, Request $request): Response
     {
+        # SEGURIDAD NO RECOMENDADA
+        /* if(!$this->getUser())
+            return $this->redirectToRoute('app_login'); */
         // $em = $this->getDoctrine()->getManager();
         // $posts = $em->getRepository(Post::class)->findAll(); #Se reemplazará con la query e más abajo
         $posts = $this->getDoctrine()->getManager()->getRepository(Post::class)->todosLosPost(); 
@@ -39,5 +42,13 @@ class DashboardController extends AbstractController
             'name' => $this->getUser()->getNombre(),
             'posts'=>$pagination,
         ]);
+    }
+
+    /**
+     * @Route("/dashboard/hola", name="dashboard-hola")
+     */
+    public function hola()
+    {
+        return $this->render('dashboard/hola.html.twig');
     }
 }
